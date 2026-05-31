@@ -1,0 +1,6 @@
+[phpex]
+extensions = ["gd", "pdo_mysql", "mbstring", "tokenizer", "xml", "ctype", "json", "bcmath", "zip", "fileinfo"]
+
+[hooks]
+prebuild = ""
+postbuild = ""
