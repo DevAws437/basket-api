@@ -14,6 +14,30 @@ class MatchController extends Controller
         private MatchService $matchService,
     ) {}
 
+    public function index(Request $request)
+    {
+        try {
+            $query = MatchRecord::with('team', 'periods');
+
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+            if ($request->filled('date')) {
+                $query->whereDate('created_at', $request->date);
+            }
+            if ($request->filled('team_id')) {
+                $query->where('team_id', $request->team_id);
+            }
+
+            $matches = $query->orderBy('id', 'desc')
+                ->paginate($request->per_page ?? 20);
+
+            return MatchResource::collection($matches);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => 'فشل تحميل المباريات'], 500);
+        }
+    }
+
     public function store(Request $request)
     {
         try {

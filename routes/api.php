@@ -2,15 +2,17 @@
 
 use App\Http\Controllers\Api\ActionController;
 use App\Http\Controllers\Api\MatchController;
+use App\Http\Controllers\Api\PlayerController;
 use App\Http\Controllers\Api\RecordController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TeamController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/teams', [TeamController::class, 'index']);
-Route::get('/teams/{team}', [TeamController::class, 'show']);
+Route::apiResource('teams', TeamController::class)->except('edit', 'create');
+Route::apiResource('players', PlayerController::class)->except('edit', 'create');
 
 Route::post('/matches', [MatchController::class, 'store']);
+Route::get('/matches', [MatchController::class, 'index']);
 Route::get('/matches/{match}', [MatchController::class, 'show']);
 Route::patch('/matches/{match}/start', [MatchController::class, 'start']);
 Route::patch('/matches/{match}/pause', [MatchController::class, 'togglePause']);
