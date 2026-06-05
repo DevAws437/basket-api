@@ -14,7 +14,9 @@ class TeamResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'logo' => $this->logo
-                ? (str_starts_with($this->logo, 'http') ? $this->logo : $request->getSchemeAndHttpHost() . '/storage/' . $this->logo)
+                ? (str_starts_with($this->logo, 'http')
+                    ? $this->logo
+                    : $request->getSchemeAndHttpHost() . '/storage/' . ltrim(str_replace('/storage/', '', $this->logo), '/'))
                 : null,
             'is_populated' => $this->is_populated,
             'players_count' => $this->whenCounted('players'),
