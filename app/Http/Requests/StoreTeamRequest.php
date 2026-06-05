@@ -11,13 +11,14 @@ class StoreTeamRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
-    {
-        return [
-            'name' => 'required|string|max:100|unique:teams,name',
-            'logo' => 'nullable|string|max:255',
-        ];
-    }
+   public function rules(): array
+{
+    return [
+        'name' => 'required|string|max:100|unique:teams,name',
+        'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        'is_populated' => 'nullable|boolean',
+    ];
+}
 
     public function messages(): array
     {
