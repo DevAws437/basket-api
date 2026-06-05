@@ -13,7 +13,9 @@ class TeamResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'logo' => $this->logo ? Storage::url($this->logo) : null,
+            'logo' => $this->logo
+                ? (str_starts_with($this->logo, 'http') ? $this->logo : $request->getSchemeAndHttpHost() . '/storage/' . $this->logo)
+                : null,
             'is_populated' => $this->is_populated,
             'players_count' => $this->whenCounted('players'),
             'players' => PlayerResource::collection($this->whenLoaded('players')),
