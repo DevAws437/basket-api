@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
 use App\Http\Resources\TeamResource;
 use App\Models\Team;
+use Illuminate\Support\Facades\Storage;
 
 class TeamController extends Controller
 {
@@ -18,7 +19,13 @@ class TeamController extends Controller
 
     public function store(StoreTeamRequest $request)
     {
-        $team = Team::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('logo')) {
+            $data['logo'] = $request->file('logo')->store('teams', 'public');
+        }
+
+        $team = Team::create($data);
         return new TeamResource($team, 201);
     }
 
@@ -30,7 +37,16 @@ class TeamController extends Controller
 
     public function update(UpdateTeamRequest $request, Team $team)
     {
-        $team->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('logo')) {
+            if ($team->logo) {
+                Storage::disk('public')->delete($team->logo);
+            }
+            $data['logo'] = $request->file('logo')->store('teams', 'public');
+        }
+
+        $team->update($data);
         return new TeamResource($team->fresh()->load('players'));
     }
 
@@ -38,6 +54,9 @@ class TeamController extends Controller
     {
         if ($team->matches()->exists()) {
             return response()->json(['message' => 'لا يمكن حذف فريق لديه مباريات مسجلة'], 422);
+        }
+        if ($team->logo) {
+            Storage::disk('public')->delete($team->logo);
         }
         $team->delete();
         return response()->json(['message' => 'تم حذف الفريق بنجاح']);

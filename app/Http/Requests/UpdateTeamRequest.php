@@ -15,7 +15,7 @@ class UpdateTeamRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|max:100|unique:teams,name,' . $this->route('team'),
-            'logo' => 'nullable|string|max:255',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'is_populated' => 'sometimes|boolean',
         ];
     }

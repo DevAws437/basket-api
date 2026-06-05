@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class TeamResource extends JsonResource
 {
@@ -12,7 +13,7 @@ class TeamResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'logo' => $this->logo,
+            'logo' => $this->logo ? Storage::url($this->logo) : null,
             'is_populated' => $this->is_populated,
             'players_count' => $this->whenCounted('players'),
             'players' => PlayerResource::collection($this->whenLoaded('players')),
