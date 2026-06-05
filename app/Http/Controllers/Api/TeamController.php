@@ -18,12 +18,18 @@ class TeamController extends Controller
 
 public function store(StoreTeamRequest $request)
 {
-    dd([
-        'all' => $request->all(),
-        'hasFile' => $request->hasFile('logo'),
-        'file' => $request->file('logo'),
-    ]);
+    dd($request->all());
+    $data = $request->validated();
+
+    if ($request->hasFile('logo')) {
+        $data['logo'] = $request->file('logo')->store('teams', 'public');
+    }
+
+    $team = Team::create($data);
+
+    return new TeamResource($team, 201);
 }
+
     public function show(Team $team)
     {
         $team->load('players');
