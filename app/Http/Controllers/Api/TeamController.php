@@ -18,6 +18,7 @@ class TeamController extends Controller
 
 public function store(StoreTeamRequest $request)
 {
+    dd($request->all());
     $data = $request->validated();
 
     if ($request->hasFile('logo')) {
