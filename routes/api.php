@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TeamController;
 use Illuminate\Support\Facades\Route;
 
-Route::apiResource('teams', TeamController::class)->except('edit', 'create');
+Route::apiResource('teams', TeamController::class)->except('index','edit', 'create');
 Route::apiResource('players', PlayerController::class)->except('edit', 'create');
 
 Route::post('/matches', [MatchController::class, 'store']);
