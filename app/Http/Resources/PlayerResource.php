@@ -17,7 +17,11 @@ class PlayerResource extends JsonResource
             'last_name' => $this->last_name,
             'full_name' => $this->full_name,
             'position' => $this->position,
-            'photo' => $this->photo,
+            'photo' => $this->photo
+                ? (str_starts_with($this->photo, 'http')
+                    ? $this->photo
+                    : $request->getSchemeAndHttpHost() . '/storage/' . ltrim(str_replace('storage/', '', $this->photo), '/'))
+                : null,
         ];
     }
 }

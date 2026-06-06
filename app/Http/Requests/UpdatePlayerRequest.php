@@ -19,7 +19,7 @@ class UpdatePlayerRequest extends FormRequest
             'first_name' => 'sometimes|string|max:100',
             'last_name' => 'sometimes|string|max:100',
             'position' => 'sometimes|string|in:G,F,C,GF,FC,PG,SG,SF,PF',
-            'photo' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
     }
 

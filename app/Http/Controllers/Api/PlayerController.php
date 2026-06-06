@@ -7,6 +7,7 @@ use App\Http\Requests\StorePlayerRequest;
 use App\Http\Requests\UpdatePlayerRequest;
 use App\Http\Resources\PlayerResource;
 use App\Models\Player;
+use Illuminate\Support\Facades\Storage;
 
 class PlayerController extends Controller
 {
@@ -18,7 +19,13 @@ class PlayerController extends Controller
 
     public function store(StorePlayerRequest $request)
     {
-        $player = Player::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('players', 'public');
+        }
+
+        $player = Player::create($data);
         $player->load('team');
         return new PlayerResource($player);
     }
@@ -31,12 +38,24 @@ class PlayerController extends Controller
 
     public function update(UpdatePlayerRequest $request, Player $player)
     {
-        $player->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('photo')) {
+            if ($player->photo) {
+                Storage::disk('public')->delete($player->photo);
+            }
+            $data['photo'] = $request->file('photo')->store('players', 'public');
+        }
+
+        $player->update($data);
         return new PlayerResource($player->fresh()->load('team'));
     }
 
     public function destroy(Player $player)
     {
+        if ($player->photo) {
+            Storage::disk('public')->delete($player->photo);
+        }
         $player->delete();
         return response()->json(['message' => 'تم حذف اللاعب بنجاح']);
     }
