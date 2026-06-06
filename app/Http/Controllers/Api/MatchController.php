@@ -174,4 +174,18 @@ class MatchController extends Controller
             return response()->json(['error' => 'فشل إنهاء المباراة'], 500);
         }
     }
+
+    public function destroy(MatchRecord $match)
+    {
+        try {
+            $match->actions()->delete();
+            $match->periods()->delete();
+            $match->lineups()->delete();
+            $match->delete();
+
+            return response()->json(['message' => 'تم حذف المباراة']);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => 'فشل حذف المباراة'], 500);
+        }
+    }
 }

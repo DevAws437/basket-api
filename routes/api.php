@@ -21,6 +21,7 @@ Route::patch('/matches/{match}/team-score', [MatchController::class, 'updateTeam
 Route::post('/matches/{match}/end-period', [MatchController::class, 'endPeriod']);
 Route::post('/matches/{match}/overtime', [MatchController::class, 'addOvertime']);
 Route::post('/matches/{match}/end', [MatchController::class, 'endMatch']);
+Route::delete('/matches/{match}', [MatchController::class, 'destroy']);
 
 Route::post('/matches/{match}/actions', [ActionController::class, 'record']);
 Route::post('/matches/{match}/substitute', [ActionController::class, 'substitute']);
