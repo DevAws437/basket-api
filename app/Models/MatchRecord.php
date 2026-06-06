@@ -13,15 +13,12 @@ class MatchRecord extends Model
         'type', 'team_id', 'opponent_name',
         'team_score', 'opponent_score',
         'status', 'current_period', 'is_paused',
-        'paused_seconds', 'paused_at',
     ];
 
     protected function casts(): array
     {
         return [
             'is_paused' => 'boolean',
-            'paused_at' => 'datetime',
-            'paused_seconds' => 'integer',
         ];
     }
 
@@ -65,7 +62,6 @@ class MatchRecord extends Model
             return 0;
         }
 
-        $total = Carbon::now()->diffInSeconds($period->started_at);
-        return max(0, $total - ($this->paused_seconds ?? 0));
+        return max(0, Carbon::now()->diffInSeconds($period->started_at));
     }
 }
