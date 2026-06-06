@@ -120,6 +120,25 @@ class MatchController extends Controller
         }
     }
 
+    public function updateTeamScore(Request $request, MatchRecord $match)
+    {
+        try {
+            $validated = $request->validate([
+                'score' => 'required|integer|min:0',
+            ]);
+
+            $match->update(['team_score' => $validated['score']]);
+
+            return response()->json([
+                'team_score' => $match->fresh()->team_score,
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return response()->json(['error' => 'فشل تحديث نقاط الفريق'], 500);
+        }
+    }
+
     public function endPeriod(MatchRecord $match)
     {
         try {

@@ -17,6 +17,7 @@ Route::get('/matches/{match}', [MatchController::class, 'show']);
 Route::patch('/matches/{match}/start', [MatchController::class, 'start']);
 Route::patch('/matches/{match}/pause', [MatchController::class, 'togglePause']);
 Route::patch('/matches/{match}/opponent-score', [MatchController::class, 'updateOpponentScore']);
+Route::patch('/matches/{match}/team-score', [MatchController::class, 'updateTeamScore']);
 Route::post('/matches/{match}/end-period', [MatchController::class, 'endPeriod']);
 Route::post('/matches/{match}/overtime', [MatchController::class, 'addOvertime']);
 Route::post('/matches/{match}/end', [MatchController::class, 'endMatch']);
