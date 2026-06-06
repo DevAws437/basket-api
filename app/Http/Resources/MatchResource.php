@@ -25,7 +25,11 @@ class MatchResource extends JsonResource
                 return $this->team_score > $this->opponent_score ? 'win' : 'loss';
             }),
             'periods' => MatchPeriodResource::collection($this->whenLoaded('periods')),
-            'active_players' => PlayerResource::collection($this->whenLoaded('activePlayers')),
+            'active_players' => $this->whenLoaded('activePlayers', function () {
+                return PlayerResource::collection(
+                    $this->activePlayers->map(fn($l) => $l->player)->filter()
+                );
+            }),
             'created_at' => $this->created_at,
         ];
     }
