@@ -63,7 +63,18 @@ class MatchService
     public function togglePause(MatchRecord $match): bool
     {
         $newPaused = !$match->is_paused;
-        $match->update(['is_paused' => $newPaused]);
+
+        if ($newPaused) {
+            $match->update(['is_paused' => true, 'paused_at' => now()]);
+        } else {
+            $pausedDuration = now()->diffInSeconds($match->paused_at ?? now());
+            $match->update([
+                'is_paused' => false,
+                'paused_seconds' => ($match->paused_seconds ?? 0) + $pausedDuration,
+                'paused_at' => null,
+            ]);
+        }
+
         MatchUpdated::dispatch($match->fresh());
         return $newPaused;
     }

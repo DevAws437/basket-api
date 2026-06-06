@@ -19,6 +19,8 @@ class MatchResource extends JsonResource
             'status' => $this->status,
             'current_period' => $this->current_period,
             'is_paused' => $this->is_paused,
+            'paused_seconds' => $this->paused_seconds,
+            'elapsed_seconds' => $this->getCurrentElapsedSeconds(),
             'result' => $this->when($this->status === 'completed', function () {
                 return $this->team_score > $this->opponent_score ? 'win' : 'loss';
             }),
