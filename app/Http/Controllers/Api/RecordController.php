@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MatchResource;
 use App\Models\MatchRecord;
+use App\Models\PlayerAction;
 use App\Services\ExportService;
 use App\Services\StatisticsService;
 use App\Services\MVPCalculator;
@@ -58,12 +59,33 @@ class RecordController extends Controller
 
             $match->load('team', 'periods');
 
+            $actions = PlayerAction::where('match_id', $match->id)
+                ->where('is_undo', false)
+                ->whereIn('action_type', ['shot_2pt_made', 'shot_3pt_made', 'ft_made'])
+                ->with('player')
+                ->orderBy('id')
+                ->get();
+
+            $runningTeam = 0;
+            $chartData = [];
+            foreach ($actions as $a) {
+                $runningTeam += $a->points;
+                $chartData[] = [
+                    'elapsed' => $a->action_timestamp,
+                    'points' => $a->points,
+                    'team_score' => $runningTeam,
+                    'action_type' => $a->action_type,
+                    'player_name' => $a->player?->full_name ?? $a->player?->first_name ?? 'Unknown',
+                ];
+            }
+
             return response()->json([
                 'match' => new MatchResource($match),
                 'team_stats' => $this->statisticsService->getTeamStats($match),
                 'player_stats' => $this->statisticsService->getAllPlayerStats($match),
                 'mvp' => $this->mvpCalculator->calculate($match),
                 'flow' => $this->statisticsService->getFlowData($match),
+                'chart_data' => $chartData,
             ]);
         } catch (\Throwable $e) {
             return response()->json(['error' => 'فشل جلب تفاصيل المباراة'], 500);
